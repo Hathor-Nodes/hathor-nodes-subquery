@@ -3,23 +3,12 @@
 #   height: BigInt!
 # }
 
-type ExecuteEvent @entity {
+type IbcEvent @entity {
   id: ID!
   blockHeight: BigInt!
   txHash: String!
-  contractAddress: String!
-}
-
-# type Transaction @entity {
-#   id: ID!
-#   blockHeight: BigInt!
-#   timestamp: String!
-# }
-
-type Message @entity {
-  id: ID!
-  blockHeight: BigInt!
-  txHash: String!
-  sender: String!
-  contract: String!
+  amount: BigInt!
+  denom: String!
+  eventDatetime: Date!
+  eventType: Int!
 }

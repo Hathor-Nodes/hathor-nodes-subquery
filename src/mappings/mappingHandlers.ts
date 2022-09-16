@@ -1,44 +1,33 @@
-import { ExecuteEvent, Message } from "../types";
+import { IbcEvent } from "../types";
 import {
-  CosmosEvent,
-  CosmosBlock,
-  CosmosMessage,
-  CosmosTransaction,
+  CosmosEvent
 } from "@subql/types-cosmos";
 
-/*
-export async function handleBlock(block: CosmosBlock): Promise<void> {
-  // If you wanted to index each block in Cosmos (Juno), you could do that here
-}
+const EVENT_TYPES = {
+  RECEIVE: 1,
+  TRANSFER: 2
+};
 
-export async function handleTransaction(tx: CosmosTransaction): Promise<void> {
-  const transactionRecord = Transaction.create({
-    id: tx.hash,
-    blockHeight: BigInt(tx.block.block.header.height),
-    timestamp: tx.block.block.header.time,
-  });
-  await transactionRecord.save();
-}
-*/
+const makeIbcEventRecord = (event: CosmosEvent, eventType: number): IbcEvent => {
+  const packetData =  JSON.parse(event.event.attributes.find(attr => attr.key === 'packet_data').value);
 
-export async function handleMessage(msg: CosmosMessage): Promise<void> {
-  const messageRecord = Message.create({
-    id: `${msg.tx.hash}-${msg.idx}`,
-    blockHeight: BigInt(msg.block.block.header.height),
-    txHash: msg.tx.hash,
-    sender: msg.msg.decodedMsg.sender,
-    contract: msg.msg.decodedMsg.contract,
-  });
-  await messageRecord.save();
-}
-
-export async function handleEvent(event: CosmosEvent): Promise<void> {
-  const eventRecord = ExecuteEvent.create({
+  return IbcEvent.create({
     id: `${event.tx.hash}-${event.msg.idx}-${event.idx}`,
     blockHeight: BigInt(event.block.block.header.height),
     txHash: event.tx.hash,
-    contractAddress: event.event.attributes.find(attr => attr.key === '_contract_address').value
+    amount: BigInt(packetData.amount),
+    denom: packetData.denom.split("/").at(-1),
+    eventDatetime: new Date(event.block.block.header.time),
+    eventType
   });
+};
 
-  await eventRecord.save();
+export async function handleReceivePacketEvent(event: CosmosEvent): Promise<void> {
+  const ibcEventRecord = makeIbcEventRecord(event, EVENT_TYPES.RECEIVE);
+  await ibcEventRecord.save();
+}
+
+export async function handleTransferPacketEvent(event: CosmosEvent): Promise<void> {
+  const ibcEventRecord = makeIbcEventRecord(event, EVENT_TYPES.TRANSFER);
+  await ibcEventRecord.save();
 }
