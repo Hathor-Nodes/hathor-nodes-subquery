@@ -23,11 +23,13 @@ const makeIbcEventRecord = (event: CosmosEvent, eventType: number): IbcEvent => 
 };
 
 export async function handleReceivePacketEvent(event: CosmosEvent): Promise<void> {
+  logger.info("Handling receive packet event");
   const ibcEventRecord = makeIbcEventRecord(event, EVENT_TYPES.RECEIVE);
   await ibcEventRecord.save();
 }
 
 export async function handleTransferPacketEvent(event: CosmosEvent): Promise<void> {
+  logger.info("Handling transfer packet event");
   const ibcEventRecord = makeIbcEventRecord(event, EVENT_TYPES.TRANSFER);
   await ibcEventRecord.save();
 }
