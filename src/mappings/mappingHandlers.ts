@@ -11,12 +11,22 @@ const EVENT_TYPES = {
 const makeIbcEventRecord = (event: CosmosEvent, eventType: number): IbcEvent => {
   const packetData =  JSON.parse(event.event.attributes.find(attr => attr.key === 'packet_data').value);
 
+  let amount = -1;
+  if (packetData.amount !== undefined && packetData.amount !== null){
+    amount = packetData.amount;
+  }
+
+  let denom = 'undefined';
+  if (packetData.denom !== undefined && packetData.denom !== null){
+    denom = packetData.denom;
+  }
+
   return IbcEvent.create({
     id: `${event.tx.hash}-${event.msg.idx}-${event.idx}`,
     blockHeight: BigInt(event.block.block.header.height),
     txHash: event.tx.hash,
-    amount: BigInt(packetData.amount),
-    denom: packetData.denom.split("/").at(-1),
+    amount: BigInt(amount),
+    denom: denom.split("/").at(-1),
     eventDatetime: new Date(event.block.block.header.time),
     eventType
   });
