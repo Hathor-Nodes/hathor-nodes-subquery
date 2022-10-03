@@ -17,7 +17,7 @@ schema:
 network:
   chainId: juno-1
   # You must connect to an archive (non-pruned) node
-  endpoint: https://rpc.juno-1.api.onfinality.io
+  endpoint: https://juno.api.onfinality.io/public
   # Using a dictionary can massively improve indexing speed
   dictionary: https://api.subquery.network/sq/subquery/cosmos-juno-dictionary
 

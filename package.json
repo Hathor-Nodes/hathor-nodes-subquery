@@ -1,7 +1,7 @@
 {
-  "name": "cosmos-subquery-starter",
+  "name": "hathor-nodes-subquery",
   "version": "0.0.1",
-  "description": "This project can be use as a starting point for developing your Cosmos (Juno) based SubQuery project",
+  "description": "Index IBC transaction in and out of JUNO.",
   "main": "dist/index.js",
   "scripts": {
     "build": "subql build",
@@ -17,7 +17,7 @@
     "schema.graphql",
     "project.yaml"
   ],
-  "author": "SubQuery Team",
+  "author": "HathorNodes",
   "license": "MIT",
   "devDependencies": {
     "@cosmjs/stargate": "^0.29.0",
