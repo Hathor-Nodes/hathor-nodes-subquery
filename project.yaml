@@ -39,3 +39,7 @@ dataSources:
             type: send_packet
             messageFilter:
               type: "/ibc.applications.transfer.v1.MsgTransfer"
+        - handler: handleMsgExecuteContract
+          kind: cosmos/MessageHandler
+          filter:
+            type: "/cosmwasm.wasm.v1.MsgExecuteContract"

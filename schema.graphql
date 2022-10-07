@@ -5,4 +5,14 @@ type IbcEvent @entity {
   amount: BigInt!
   denom: String! @index
   eventDatetime: Date! @index
-  eventType: Int!  }
+  eventType: Int!
+}
+
+type ContractMessage @entity {
+  id: ID!
+  blockHeight: BigInt!
+  txHash: String!
+  sender: String!
+  contract: String!
+  messageDatetime: Date!
+}
