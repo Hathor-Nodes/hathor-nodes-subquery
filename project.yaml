@@ -17,7 +17,7 @@ schema:
 network:
   chainId: juno-1
   # You must connect to an archive (non-pruned) node
-  endpoint: https://juno.api.onfinality.io/public
+  endpoint: https://juno.api.onfinality.io/rpc?apikey=4d5da457-124b-443a-8e85-d49b83783e54 
   # Using a dictionary can massively improve indexing speed
   dictionary: https://api.subquery.network/sq/subquery/cosmos-juno-dictionary
 
@@ -43,3 +43,12 @@ dataSources:
           kind: cosmos/MessageHandler
           filter:
             type: "/cosmwasm.wasm.v1.MsgExecuteContract"
+        - handler: handleLoopAirDropEvent
+          kind: cosmos/EventHandler
+          filter:
+            type: wasm
+            messageFilter:
+              type: "/cosmwasm.wasm.v1.MsgExecuteContract"
+              contractCall: "claim"
+              values:
+                contract: "juno143rmxg4khjkxzk56pd3tru6wapenwls20y3shahlc5p9zgddyk8q27n0k4"
