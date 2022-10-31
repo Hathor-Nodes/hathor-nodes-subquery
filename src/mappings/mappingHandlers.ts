@@ -1,4 +1,4 @@
-import { IbcEvent, ContractMessage, LoopAirDropEvent } from "../types";
+import { IbcEvent, ContractMessage, LoopAirDropEvent, LoopAirDropMessage } from "../types";
 import { CosmosEvent, CosmosMessage } from "@subql/types-cosmos";
 
 const EVENT_TYPES = {
@@ -16,7 +16,7 @@ const makeIbcEventRecord = (
 
   let amount = -1;
   if (packetData.amount !== undefined && packetData.amount !== null) {
-    amount = packetData.amount;
+      amount = packetData.amount;
   }
 
   let denom = "undefined";
@@ -66,6 +66,21 @@ export async function handleMsgExecuteContract(
   await messageRecord.save();
 }
 
+export async function handleLoopAirDropMessage(
+    msg: CosmosMessage
+): Promise<void> {
+
+    const airdropClaim = LoopAirDropMessage.create({
+        id: `${msg.tx.hash}-${msg.idx}`,
+        blockHeight: BigInt(msg.block.block.header.height),
+        sender: msg.msg.decodedMsg.sender || '',
+        amount: msg.msg.decodedMsg.msg.claim.amount || 0,
+    });
+
+    logger.info("Saving loop air drop message.")
+    await airdropClaim.save();
+}
+
 export async function handleLoopAirDropEvent(
   event: CosmosEvent
 ): Promise<void> {
@@ -80,12 +95,6 @@ export async function handleLoopAirDropEvent(
   if (amountObj && amountObj.value !== undefined && amountObj.value !== null) {
     amount = amountObj.value;
   }
-
-  /*
-  if (senderObj === undefined || senderObj === null || senderObj.value === undefined || senderObj.value === null) {
-    senderObj = event.event.attributes.find(attr => attr.key === 'sender')
-  }
- */
 
   if (senderObj && senderObj.value !== undefined && senderObj.value !== null) {
     sender = senderObj.value
@@ -105,4 +114,3 @@ export async function handleLoopAirDropEvent(
 
   await loopAirDropEventRecord.save();
 }
-

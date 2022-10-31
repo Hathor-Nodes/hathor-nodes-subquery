@@ -43,12 +43,10 @@ dataSources:
           kind: cosmos/MessageHandler
           filter:
             type: "/cosmwasm.wasm.v1.MsgExecuteContract"
-        - handler: handleLoopAirDropEvent
-          kind: cosmos/EventHandler
+        - handler: handleLoopAirDropMessage
+          kind: cosmos/MessageHandler
           filter:
-            type: wasm
-            messageFilter:
-              type: "/cosmwasm.wasm.v1.MsgExecuteContract"
-              contractCall: "claim"
-              values:
-                contract: "juno143rmxg4khjkxzk56pd3tru6wapenwls20y3shahlc5p9zgddyk8q27n0k4"
+            type: "/cosmwasm.wasm.v1.MsgExecuteContract"
+            contractCall: "claim"
+            values:
+              contract: "juno143rmxg4khjkxzk56pd3tru6wapenwls20y3shahlc5p9zgddyk8q27n0k4"

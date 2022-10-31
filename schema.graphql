@@ -26,4 +26,9 @@ type LoopAirDropEvent @entity {
   eventDatetime: Date! @index
 }
 
-
+type LoopAirDropMessage @entity {
+  id: ID!
+  blockHeight: BigInt!
+  sender: String!
+  amount: BigInt!
+}
