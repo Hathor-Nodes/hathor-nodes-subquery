@@ -1,3 +1,12 @@
+type Transaction @entity {
+  id: ID!
+  blockHeight: BigInt!
+  timestamp: Date!
+  txType: String!
+  txFeeDenom: String!
+  txFeeAmount: BigInt!
+}
+
 type IbcEvent @entity {
   id: ID!
   blockHeight: BigInt!
@@ -15,15 +24,6 @@ type ContractMessage @entity {
   sender: String!
   contract: String!
   messageDatetime: Date!
-}
-
-type LoopAirDropEvent @entity {
-  id: ID!
-  blockHeight: BigInt!
-  txHash: String!
-  amount: BigInt!
-  sender: String!
-  eventDatetime: Date! @index
 }
 
 type LoopAirDropMessage @entity {

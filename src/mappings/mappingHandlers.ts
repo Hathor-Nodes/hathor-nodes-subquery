@@ -1,5 +1,5 @@
-import { IbcEvent, ContractMessage, LoopAirDropEvent, LoopAirDropMessage } from "../types";
-import { CosmosEvent, CosmosMessage } from "@subql/types-cosmos";
+import { Transaction, IbcEvent, ContractMessage, LoopAirDropEvent, LoopAirDropMessage } from "../types";
+import { CosmosEvent, CosmosMessage, CosmosTransaction} from "@subql/types-cosmos";
 
 const EVENT_TYPES = {
   RECEIVE: 1,
@@ -35,6 +35,31 @@ const makeIbcEventRecord = (
   });
 };
 
+export async function handleTransaction(tx: CosmosTransaction): Promise<void> {
+  const record = new TransactionEntity(tx.tx.txhash);
+  record.blockHeight = BigInt(tx.block.block.block.header.height);
+  record.timestamp = tx.block.block.header.time;
+  record.txType = tx.tx.type;
+  record.txFeeDenom = tx.tx.auth_info.fee.amount.denom;
+  record.txFeeAmount = tx.tx.auth_info.fee.amount.amount;
+  await record.save();
+}
+
+export async function handleTransaction(
+  tx: CosmosTransaction
+): Promise<void> {
+     
+  const transactionEntity = Transaction.create({
+    id: `${tx.hash}`,
+    blockHeight: BigInt(tx.block.block.header.height),
+    txDate: new Date(tx.block.block.header.time),
+    sender: sender,
+    txFeeDenom: tx.auth_info.fee.amount.denom,
+    txFeeAmount: tx.auth_info.fee.amount.amount,
+  });
+
+  await transactionEntity.save();
+}
 export async function handleReceivePacketEvent(
   event: CosmosEvent
 ): Promise<void> {
@@ -81,36 +106,3 @@ export async function handleLoopAirDropMessage(
     await airdropClaim.save();
 }
 
-export async function handleLoopAirDropEvent(
-  event: CosmosEvent
-): Promise<void> {
-  logger.info("Handling loop air drop event");
-
-  let amountObj = event.event.attributes.find(attr => attr.key === 'amount')
-  let senderObj = event.event.attributes.find(attr => attr.key === 'to')
-
-  let amount = '';
-  let sender = '';
-
-  if (amountObj && amountObj.value !== undefined && amountObj.value !== null) {
-    amount = amountObj.value;
-  }
-
-  if (senderObj && senderObj.value !== undefined && senderObj.value !== null) {
-    sender = senderObj.value
-  }
-
-
-  const loopAirDropEventRecord = LoopAirDropEvent.create({
-    id: `${event.tx.hash}-${event.msg.idx}-${event.idx}`,
-    blockHeight: BigInt(event.block.block.header.height),
-    txHash: event.tx.hash,
-    amount: BigInt(amount),
-    sender: sender,
-    eventDatetime: new Date(event.block.block.header.time),
-  });
-
-  logger.info("Saving loop air drop event")
-
-  await loopAirDropEventRecord.save();
-}

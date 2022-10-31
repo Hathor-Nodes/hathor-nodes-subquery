@@ -27,6 +27,8 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
+        - handler: handleTransaction
+          kind: cosmos/TransactionHandler
         - handler: handleReceivePacketEvent
           kind: cosmos/EventHandler
           filter:
