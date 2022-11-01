@@ -27,28 +27,24 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
-        - handler: handleTransaction
+        - handler: handleTransactionData
           kind: cosmos/TransactionHandler
+
+        - handler: handleMsgExecuteContract
+          kind: cosmos/MessageHandler
+          filter:
+            type: "/cosmwasm.wasm.v1.MsgExecuteContract"
+
         - handler: handleReceivePacketEvent
           kind: cosmos/EventHandler
           filter:
             type: recv_packet
             messageFilter:
               type: "/ibc.core.channel.v1.MsgRecvPacket"
+
         - handler: handleTransferPacketEvent
           kind: cosmos/EventHandler
           filter:
             type: send_packet
             messageFilter:
               type: "/ibc.applications.transfer.v1.MsgTransfer"
-        - handler: handleMsgExecuteContract
-          kind: cosmos/MessageHandler
-          filter:
-            type: "/cosmwasm.wasm.v1.MsgExecuteContract"
-        - handler: handleLoopAirDropMessage
-          kind: cosmos/MessageHandler
-          filter:
-            type: "/cosmwasm.wasm.v1.MsgExecuteContract"
-            contractCall: "claim"
-            values:
-              contract: "juno143rmxg4khjkxzk56pd3tru6wapenwls20y3shahlc5p9zgddyk8q27n0k4"
