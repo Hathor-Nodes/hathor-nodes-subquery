@@ -24,7 +24,6 @@ export async function handleTransactionData(
 export async function handleMsgExecuteContract(
   msg: CosmosMessage
 ): Promise<void> {
-
   const messageRecord = ContractMessage.create({
     id: `${msg.tx.hash}-${msg.idx}`,    
     blockHeight: BigInt(msg.block.block.header.height),
