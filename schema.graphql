@@ -23,8 +23,10 @@ type IbcEvent @entity {
   id: ID!
   blockHeight: BigInt!
   timestamp: Date! @index
-  eventType: Int!    
   txHash: String!
+  txFeeDenom: String!
+  weightedTxFeeAmount: BigInt!
+  eventType: Int!
   denom: String! @index  
   amount: BigInt!
 }

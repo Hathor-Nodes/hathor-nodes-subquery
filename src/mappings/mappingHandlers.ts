@@ -65,8 +65,11 @@ const makeIbcEventRecord = (
     id: `${event.tx.hash}-${event.msg.idx}-${event.idx}`,
     blockHeight: BigInt(event.block.block.header.height),
     timestamp: new Date(event.block.block.header.time),
-    eventType,    
     txHash: event.tx.hash,
+    txFeeDenom: event.tx.decodedTx.authInfo.fee.amount[0].denom,
+    weightedTxFeeAmount: BigInt(event.tx.decodedTx.authInfo.fee.amount[0].amount) 
+      / BigInt(event.tx.decodedTx.body.messages.length),
+    eventType,
     amount: BigInt(amount),
     denom: denom.split("/").at(-1),
   });
