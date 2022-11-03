@@ -1,19 +1,19 @@
 type Transaction @entity {
   id: ID!
   blockHeight: BigInt!
-  timestamp: Date!
+  timestamp: Date! @index
   payer: String!
   granter: String!
-  feeDenom: String!
+  feeDenom: String! @index
   feeAmount: BigInt!
 }
 
 type ContractMessage @entity {
   id: ID!
   blockHeight: BigInt!
-  timestamp: Date!  
+  timestamp: Date! @index
   txHash: String!
-  txFeeDenom: String!
+  txFeeDenom: String! @index
   weightedTxFeeAmount: BigInt!
   sender: String!
   contract: String!
@@ -24,7 +24,7 @@ type IbcEvent @entity {
   blockHeight: BigInt!
   timestamp: Date! @index
   txHash: String!
-  txFeeDenom: String!
+  txFeeDenom: String! @index
   weightedTxFeeAmount: BigInt!
   eventType: Int!
   denom: String! @index  
