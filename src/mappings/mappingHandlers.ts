@@ -24,18 +24,23 @@ export async function handleTransactionData(
 export async function handleMsgExecuteContract(
   msg: CosmosMessage
 ): Promise<void> {
-  const messageRecord = ContractMessage.create({
-    id: `${msg.tx.hash}-${msg.idx}`,    
-    blockHeight: BigInt(msg.block.block.header.height),
-    timestamp: new Date(msg.block.block.header.time),    
-    txHash: msg.tx.hash,
-    txFeeDenom: msg.tx.decodedTx.authInfo.fee.amount[0].denom,
-    weightedTxFeeAmount: BigInt(msg.tx.decodedTx.authInfo.fee.amount[0].amount) 
-      / BigInt(msg.tx.decodedTx.body.messages.length),
-    sender: msg.msg.decodedMsg.sender,
-    contract: msg.msg.decodedMsg.contract,
-  });
-  await messageRecord.save();
+  const record = new ContractMessage(`${msg.tx.hash}-${msg.idx}`);
+  if (msg.tx.decodedTx.authInfo.fee.amount.length === 0) {
+    record.txFeeDenom = '';
+    record.weightedTxFeeAmount = BigInt(0);
+  } else {
+    let feeInfo = msg.tx.decodedTx.authInfo.fee.amount[0];
+    record.txFeeDenom = feeInfo.denom;
+    record.weightedTxFeeAmount = BigInt(feeInfo.amount)
+      / BigInt(msg.tx.decodedTx.body.messages.length);
+  }
+
+  record.blockHeight = BigInt(msg.block.block.header.height);
+  record.timestamp = new Date(msg.block.block.header.time);
+  record.txHash = msg.tx.hash;
+  record.sender == msg.msg.decodedMsg.sender ?? '';
+  record.contract = msg.msg.decodedMsg.contract ?? '';
+  await record.save();
 }
 
 const EVENT_TYPES = {
